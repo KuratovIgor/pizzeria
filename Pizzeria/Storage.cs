@@ -35,7 +35,7 @@ namespace Pizzeria
             }
         }
 
-        public static int GetPizzaFromStorage()
+        public static int GetPizzaFromStorage(int courierId)
         {
             lock (_getPizzaLocker)
             {
@@ -46,7 +46,7 @@ namespace Pizzeria
                 _pizza.RemoveAt(0);
                 FreePlace++;
 
-                NotifyCooking.PizzaAtCourier(order);
+                NotifyCooking.PizzaAtCourier(courierId, order);
 
                 return order;
             }

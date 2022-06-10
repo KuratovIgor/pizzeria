@@ -25,6 +25,13 @@ namespace Pizzeria
             Console.WriteLine("PIZZERIA OPENED!");
             Console.WriteLine("----------------");
 
+            Random randTimeOrder = new Random();
+            Random countOrder = new Random();
+
+            TimerCallback tm = new TimerCallback(WorkList.GenerateOrders);
+            Timer timer = new Timer(tm, 1, 0, randTimeOrder.Next(2000, 4000));
+
+
             foreach (Courier courier in _couriers)
             {
                 courier.Start();
@@ -34,12 +41,14 @@ namespace Pizzeria
             {
                 cook.Start();
             }
+
+            Console.ReadLine();
         }
 
         private static void FillDatas()
         {
-            Console.Write("Count orders: ");
-            int orders = Convert.ToInt32(Console.ReadLine());
+            //Console.Write("Count orders: ");
+            //int orders = Convert.ToInt32(Console.ReadLine());
 
             Console.Write("Count cooks: ");
             int cooks = Convert.ToInt32(Console.ReadLine());
@@ -49,7 +58,7 @@ namespace Pizzeria
 
             Console.WriteLine();
 
-            GenerateStartOrders(orders);
+            //GenerateStartOrders(orders);
             GenerateCooks(cooks);
             GenerateCouriers(couriers);
         }
@@ -74,7 +83,7 @@ namespace Pizzeria
         {
             for (int courier = 1; courier <= couriers; courier++)
             {
-                _couriers.Add(new Courier());
+                _couriers.Add(new Courier(courier, 2));
             }
         }
 

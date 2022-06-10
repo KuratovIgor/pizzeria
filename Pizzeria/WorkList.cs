@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace Pizzeria
 {
@@ -10,19 +11,35 @@ namespace Pizzeria
 
         public static List<int> PizzaOrders { get; set; } = new List<int>();
 
+        public static void GenerateOrders(object countOrder)
+        {
+            Random rand = new Random();
+
+            int i = 0;
+            while(i < (int)countOrder)
+            {
+                int order = rand.Next(1, 30);
+
+                if (!PizzaOrders.Contains(order))
+                {
+                    PizzaOrders.Add(order);
+                    NotifyCooking.PizzaOrdered(order);
+
+                    i++;
+                }
+            }
+        }
+
         public static int GetOrder()
         {
             lock (_orderLocker)
             {
-                if (PizzaOrders.Count != 0)
-                {
-                    int order = PizzaOrders[0];
-                    PizzaOrders.RemoveAt(0);
+                while (PizzaOrders.Count == 0) { }
 
-                    return order;
-                }
+                int order = PizzaOrders[0];
+                 PizzaOrders.RemoveAt(0);
 
-                return 0;
+                return order;
             }
         }
     }

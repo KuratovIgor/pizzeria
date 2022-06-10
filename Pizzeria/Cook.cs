@@ -29,7 +29,7 @@ namespace Pizzeria
 
                 NotifyCooking.PizzaInProgress(_order);
 
-                Thread.Sleep(_cookingPizzaTime.Next(1000, 5000));
+                Thread.Sleep(_cookingPizzaTime.Next(6000, 12000));
 
                 NotifyCooking.PizzaIsReady(_order);
 

@@ -9,10 +9,14 @@ namespace Pizzeria
     {
         private Thread _deliverThread;
         private Random _deliverTime = new Random();
-        private int _order;
+        private List<int> _orders = new List<int>();
+        private int _bagpackSize;
+        private int _id;
 
-        public Courier()
+        public Courier(int id, int bagpackSize)
         {
+            _id = id;
+            _bagpackSize = bagpackSize;
             _deliverThread = new Thread(Deliver);
         }
 
@@ -21,15 +25,25 @@ namespace Pizzeria
             _deliverThread.Start();
         }
 
-        private void Deliver(object orderNumber)
+        private void Deliver()
         {
             while (WorkList.PizzaOrders.Count != 0 || Storage.FreePlace != Storage.MaxCapacity)
             {
-                _order = Storage.GetPizzaFromStorage();
+                for (int i = 0; i < _bagpackSize; i++)
+                {
+                    _orders.Add(Storage.GetPizzaFromStorage(_id));
+                }
 
-                Thread.Sleep(_deliverTime.Next(5000, 10000));
+                foreach (int order in _orders)
+                {
+                    NotifyCooking.PizzaInDeliver(_id, order);
+                }
 
-                NotifyCooking.PizzaDelivered(_order);
+                foreach (int order in _orders)
+                {
+                    Thread.Sleep(_deliverTime.Next(8000, 16000));
+                    NotifyCooking.PizzaDelivered(_id, order);
+                }
             }
         }
     }
