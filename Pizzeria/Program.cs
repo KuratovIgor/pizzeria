@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Text.Json;
+using System.IO;
 
 namespace Pizzeria
 {
     class Program
     {
+        private static Employees _employees = new Employees();
         private static List<Cook> _cooks = new List<Cook>();
         private static List<Courier> _couriers = new List<Courier>();
 
@@ -15,9 +18,20 @@ namespace Pizzeria
 
             Thread.Sleep(1000);
 
-            FillDatas();
+            GenerateEmployees();
 
             StartPizzeria();
+        }
+
+        private static void GenerateEmployees()
+        {
+            var path = Path.Combine(Environment.CurrentDirectory, "../../../employees.json");
+            var json = File.ReadAllText(path);
+
+            _employees = Newtonsoft.Json.JsonConvert.DeserializeObject<Employees>(json);
+
+            GenerateCooks();
+            GenerateCouriers();
         }
 
         private static void StartPizzeria()
@@ -45,45 +59,19 @@ namespace Pizzeria
             Console.ReadLine();
         }
 
-        private static void FillDatas()
+        private static void GenerateCooks()
         {
-            //Console.Write("Count orders: ");
-            //int orders = Convert.ToInt32(Console.ReadLine());
-
-            Console.Write("Count cooks: ");
-            int cooks = Convert.ToInt32(Console.ReadLine());
-
-            Console.Write("Count couriers: ");
-            int couriers = Convert.ToInt32(Console.ReadLine());
-
-            Console.WriteLine();
-
-            //GenerateStartOrders(orders);
-            GenerateCooks(cooks);
-            GenerateCouriers(couriers);
-        }
-
-        private static void GenerateStartOrders(int orders)
-        {
-            for (int order = 1; order <= orders; order++)
-            {
-                WorkList.PizzaOrders.Add(order);
-            }
-        }
-
-        private static void GenerateCooks(int cooks)
-        {
-            for (int cook = 1; cook <= cooks; cook++)
+            for (int cook = 1; cook <= _employees.cooks; cook++)
             {
                 _cooks.Add(new Cook());
             }
         }
 
-        private static void GenerateCouriers(int couriers)
+        private static void GenerateCouriers()
         {
-            for (int courier = 1; courier <= couriers; courier++)
+            foreach (CourierJson courier in _employees.couriers)
             {
-                _couriers.Add(new Courier(courier, 2));
+                _couriers.Add(new Courier(courier.id, courier.bagpack_size));
             }
         }
 

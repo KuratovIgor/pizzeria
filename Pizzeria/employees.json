@@ -1,0 +1,17 @@
+﻿{
+	"cooks": 5,
+	"couriers": [
+		{
+			"id": 1,
+			"bagpack_size": 3
+		},
+		{
+			"id": 2,
+			"bagpack_size": 1
+		},
+		{
+			"id": 3,
+			"bagpack_size": 2
+		}
+	]
+}
